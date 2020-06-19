@@ -21,22 +21,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
     android:fitsSystemWindows="true"
+    android:foregroundGravity="center_vertical|center_horizontal"
     tools:context=".MainActivity">
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-    </com.google.android.material.appbar.AppBarLayout>
 
 
     <LinearLayout
@@ -72,7 +60,6 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:onClick="startUpdatesButtonHandler"
@@ -83,7 +70,6 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/small_margin"
-                        android:layout_marginLeft="@dimen/small_margin"
                         android:layout_weight="1"
                         android:enabled="false"
                         android:gravity="center"
@@ -102,43 +88,33 @@
 
                 <TextView
                     android:id="@+id/latitude_text"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/small_margin"
-                    android:layout_marginLeft="@dimen/small_margin"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#FFFFFF"
                     android:textSize="@dimen/default_text_size" />
 
                 <TextView
                     android:id="@+id/longitude_text"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/small_margin"
-                    android:layout_marginLeft="@dimen/small_margin"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#FFFFFF"
                     android:textSize="@dimen/default_text_size" />
 
                 <TextView
                     android:id="@+id/last_update_time_text"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/small_margin"
-                    android:layout_marginLeft="@dimen/small_margin"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#FFFFFF"
-                    android:textSize="@dimen/default_text_size" />
+                    android:textSize="@dimen/default_text_size"
+                    tools:text="@tools:sample/date/hhmmss" />
 
-                <TextView
-                    android:id="@+id/time_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/small_margin"
-                    android:layout_marginLeft="@dimen/small_margin"
-                    android:textColor="#FFFFFF"
-                    android:textColorHint="#FFFFFF"
-                    android:textSize="@dimen/default_text_size" />
+
             </LinearLayout>
 
         </RelativeLayout>
@@ -149,17 +125,35 @@
             android:layout_weight=".4"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/cog_text"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/small_margin"
-                android:layout_marginLeft="@dimen/small_margin"
-                android:gravity="center_horizontal|center_vertical"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#FFFFFF"
-                android:textSize="100sp"
-                tools:text="@tools:sample/lorem" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/cogLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cog"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#FFFFFF" />
+
+                <TextView
+                    android:id="@+id/cog_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#FFFFFF"
+                    android:textSize="250sp"
+                    app:autoSizeTextType="none"
+                    tools:text="349" />
+
+            </LinearLayout>
+
         </RelativeLayout>
 
         <RelativeLayout
@@ -168,17 +162,34 @@
             android:layout_weight=".4"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/sog_text"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/small_margin"
-                android:layout_marginLeft="@dimen/small_margin"
-                android:gravity="center_horizontal|center_vertical"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#FFFFFF"
-                android:textSize="100sp"
-                tools:text="@tools:sample/lorem" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/sogLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sog"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="#FFFFFF"
+                    android:textColorHighlight="#FFFFFF" />
+
+                <TextView
+                    android:id="@+id/sog_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#FFFFFF"
+                    android:textSize="250sp"
+                    app:autoSizeMaxTextSize="200sp"
+                    app:autoSizeMinTextSize="100sp"
+                    tools:text="5.6" />
+
+            </LinearLayout>
         </RelativeLayout>
 
     </LinearLayout>

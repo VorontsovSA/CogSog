@@ -23,17 +23,25 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
+
 import androidx.annotation.NonNull;
+
 import com.google.android.material.snackbar.Snackbar;
+
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -142,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView mLongitudeTextView;
     private TextView mSogTextView;
     private TextView mCogTextView;
-    private TextView mTimeTextView;
 
     // Labels.
     private String mLatitudeLabel;
@@ -164,8 +171,7 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         // Locate the UI widgets.
         mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
@@ -174,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
         mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
         mSogTextView = (TextView) findViewById(R.id.sog_text);
         mCogTextView = (TextView) findViewById(R.id.cog_text);
-        mTimeTextView = (TextView) findViewById(R.id.time_text);
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
 
         // Set labels.
@@ -286,6 +291,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             // Check for the integer request code originally supplied to startResolutionForResult().
             case REQUEST_CHECK_SETTINGS:
@@ -338,7 +344,6 @@ public class MainActivity extends AppCompatActivity {
                     public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
                         Log.i(TAG, "All location settings are satisfied.");
 
-                        //noinspection MissingPermission
                         mFusedLocationClient.requestLocationUpdates(mLocationRequest,
                                 mLocationCallback, Looper.myLooper());
 
@@ -412,8 +417,8 @@ public class MainActivity extends AppCompatActivity {
                     mLastUpdateTimeLabel, mLastUpdateTime));
 
 
-            mSogTextView.setText(String.format(Locale.ENGLISH, "%.1f kt", mCurrentLocation.getSpeed() * 1.94384));
-            mCogTextView.setText(String.format(Locale.ENGLISH, "%.0f °", mCurrentLocation.getBearing()));
+            mSogTextView.setText(String.format(Locale.ENGLISH, "%.1f", mCurrentLocation.getSpeed() * 1.852));
+            mCogTextView.setText(String.format(Locale.ENGLISH, "%.0f", mCurrentLocation.getBearing()));
         }
     }
 
