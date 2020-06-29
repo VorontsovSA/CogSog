@@ -17,6 +17,7 @@
 package com.google.android.gms.location.sample.locationupdates;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -143,8 +144,6 @@ public class MainActivity extends AppCompatActivity {
     private Location mCurrentLocation;
 
     // UI Widgets.
-    private Button mStartUpdatesButton;
-    private Button mStopUpdatesButton;
     private TextView mLastUpdateTimeTextView;
     private TextView mLatitudeTextView;
     private TextView mLongitudeTextView;
@@ -172,10 +171,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        View decorView = getWindow().getDecorView();
+        // Hide both the navigation bar and the status bar.
+        // SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
+        // a general rule, you should design your app to hide the status bar whenever you
+        // hide the navigation bar.
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LOW_PROFILE;
+        decorView.setSystemUiVisibility(uiOptions);
 
         // Locate the UI widgets.
-        mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
-        mStopUpdatesButton = (Button) findViewById(R.id.stop_updates_button);
         mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
         mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
         mSogTextView = (TextView) findViewById(R.id.sog_text);
@@ -201,6 +209,17 @@ public class MainActivity extends AppCompatActivity {
         createLocationCallback();
         createLocationRequest();
         buildLocationSettingsRequest();
+
+        if (checkPermissions()) {
+            if (!mRequestingLocationUpdates) {
+                mRequestingLocationUpdates = true;
+                startLocationUpdates();
+            }
+        } else if (!checkPermissions()) {
+            requestPermissions();
+        }
+
+        updateUI();
     }
 
     /**
@@ -317,7 +336,6 @@ public class MainActivity extends AppCompatActivity {
     public void startUpdatesButtonHandler(View view) {
         if (!mRequestingLocationUpdates) {
             mRequestingLocationUpdates = true;
-            setButtonsEnabledState();
             startLocationUpdates();
         }
     }
@@ -384,24 +402,7 @@ public class MainActivity extends AppCompatActivity {
      * Updates all UI fields.
      */
     private void updateUI() {
-        setButtonsEnabledState();
         updateLocationUI();
-    }
-
-    /**
-     * Disables both buttons when functionality is disabled due to insuffucient location settings.
-     * Otherwise ensures that only one button is enabled at any time. The Start Updates button is
-     * enabled if the user is not requesting location updates. The Stop Updates button is enabled
-     * if the user is requesting location updates.
-     */
-    private void setButtonsEnabledState() {
-        if (mRequestingLocationUpdates) {
-            mStartUpdatesButton.setEnabled(false);
-            mStopUpdatesButton.setEnabled(true);
-        } else {
-            mStartUpdatesButton.setEnabled(true);
-            mStopUpdatesButton.setEnabled(false);
-        }
     }
 
     /**
@@ -417,7 +418,7 @@ public class MainActivity extends AppCompatActivity {
                     mLastUpdateTimeLabel, mLastUpdateTime));
 
 
-            mSogTextView.setText(String.format(Locale.ENGLISH, "%.1f", mCurrentLocation.getSpeed() * 1.852));
+            mSogTextView.setText(String.format(Locale.ENGLISH, "%.1f", mCurrentLocation.getSpeed() * 1.94384));
             mCogTextView.setText(String.format(Locale.ENGLISH, "%.0f", mCurrentLocation.getBearing()));
         }
     }
@@ -439,7 +440,6 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         mRequestingLocationUpdates = false;
-                        setButtonsEnabledState();
                     }
                 });
     }
@@ -449,11 +449,22 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         // Within {@code onPause()}, we remove location updates. Here, we resume receiving
         // location updates if the user has requested them.
-        if (mRequestingLocationUpdates && checkPermissions()) {
-            startLocationUpdates();
+        if (checkPermissions()) {
+            if (!mRequestingLocationUpdates) {
+                mRequestingLocationUpdates = true;
+                startLocationUpdates();
+            }
         } else if (!checkPermissions()) {
             requestPermissions();
         }
+
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LOW_PROFILE;
+        decorView.setSystemUiVisibility(uiOptions);
 
         updateUI();
     }
@@ -464,6 +475,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Remove location updates to save battery.
         stopLocationUpdates();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LOW_PROFILE;
+        decorView.setSystemUiVisibility(uiOptions);
     }
 
     /**
